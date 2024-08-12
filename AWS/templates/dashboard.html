@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/stylesheet.css') }}">
+    <title>AWS Inventory Dashboard</title>
+</head>
+<body>
+<header>
+    <img src="{{ url_for('static', filename='images/tpaywhitebg.png') }}" alt="Your Logo" class="logo">
+    <h1>AWS Inventory Dashboard</h1>
+</header>
+
+<main>
+    <section>
+        <h2>Global Instance Counts</h2>
+        <div class="circle-container">
+            <div class="circle-wrapper">
+                <div class="circle-label">Total Instances</div>
+                <div class="circle">
+                    {{ global_running_instances + global_stopped_instances }}
+                </div>
+            </div>
+            <div class="circle-wrapper">
+                <div class="circle-label">Running Instances</div>
+                <div class="circle">
+                    {{ global_running_instances }}
+                </div>
+            </div>
+            <div class="circle-wrapper">
+                <div class="circle-label">Stopped Instances</div>
+                <div class="circle">
+                    {{ global_stopped_instances }}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2>Resource Counts</h2>
+        <div class="box-container">
+            <div class="box">
+                <h3>AMI Count</h3>
+                <p>{{ ami_count }}</p>
+            </div>
+            <div class="box">
+                <h3>Volume Count</h3>
+                <p>{{ volume_count }}</p>
+            </div>
+            <div class="box">
+                <h3>Snapshot Count</h3>
+                <p>{{ snapshot_count }}</p>
+            </div>
+            <div class="box">
+                <h3>Security Group Count</h3>
+                <p>{{ security_group_count }}</p>
+            </div>
+            <div class="box">
+                <h3>Elastic IP Count</h3>
+                <p>{{ elastic_ip_count }}</p>
+            </div>
+            <div class="box">
+                <h3>Load Balancer Count</h3>
+                <p>{{ load_balancer_count }}</p>
+            </div>
+            <div class="box">
+                <h3>Running Instances</h3>
+                <p>{{ running_instances }}</p>
+            </div>
+            <div class="box">
+                <h3>Stopped Instances</h3>
+                <p>{{ stopped_instances }}</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Shared Region Selection and Instance Details Section -->
+    <section class="shared-section">
+        <h2>Regions</h2>
+        <form action="/" method="post" id="instance-form">
+            <label for="region">Select Region:</label>
+            <select name="region" id="region">
+                {% for region in regions %}
+                <option value="{{ region }}">{{ region }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Get Details</button>
+        </form>
+
+        <div class="instance-data-container">
+            <h3>Instance Data for Selected Region</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Server Name</th>
+                        <th>vCPU</th>
+                        <th>RAM</th>
+                        <th>HDD</th>
+                        <th>Private IP</th>
+                        <th>Public IP</th>
+                        <th>Owner</th>
+                        <th>Tags</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for instance in instance_data %}
+                    <tr>
+                        <td>{{ instance['Server Name'] }}</td>
+                        <td>{{ instance['vCPU'] }}</td>
+                        <td>{{ instance['RAM'] }}</td>
+                        <td>{{ instance['HDD'] }}</td>
+                        <td>{{ instance['Private IP'] }}</td>
+                        <td>{{ instance['Public IP'] }}</td>
+                        <td>{{ instance['Owner'] }}</td>
+                        <td>{{ instance['Tags'] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <p>&copy; 2024 AWS Inventory Management</p>
+</footer>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('instance-form');
+        const instanceDataContainer = document.querySelector('.instance-data-container');
+
+        form.addEventListener('submit', function () {
+            instanceDataContainer.style.display = 'block'; // Show the instance details after form submission
+        });
+    });
+</script>
+
+</body>
+</html>
+
