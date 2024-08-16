@@ -3,11 +3,13 @@ import boto3
 
 app = Flask(__name__)
 
+# List of AWS regions to query
+AWS_REGION_NAMES = ['us-east-1', 'us-west-2', 'eu-central-1']  # Example regions
+
 # Configuration for AWS credentials
 
 def get_ec2_client(region):
-    return boto3.client('ec2', region_name=region, aws_access_key_id=AWS_ACCESS_KEY_ID,
-                       aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
+    return boto3.client('ec2', region_name=region)
 
 def get_global_instance_counts():
     running_instances = 0
@@ -25,8 +27,7 @@ def get_global_instance_counts():
 
 def get_resource_counts(region):
     ec2 = get_ec2_client(region)
-    elb = boto3.client('elb', region_name=region, aws_access_key_id=AWS_ACCESS_KEY_ID,
-                       aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
+    elb = boto3.client('elb', region_name=region)
 
     # Fetch counts
     ami_count = len(ec2.describe_images(Owners=['self'])['Images'])
@@ -104,6 +105,4 @@ def index():
                            stopped_instances=stopped_instances)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5003)  # Expose on port 5003
-
-
+    app.run(host='0.0.0.0', port=5003)
