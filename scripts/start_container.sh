@@ -5,5 +5,5 @@ set -e
 docker pull eliyasankark/pyaws-app
 
 # Run the Docker image as a container
-docker run -d -p 5002:5002 eliyasankark/pyaws-app
+docker run -d -p 5003:5003 eliyasankark/pyaws-app
  
