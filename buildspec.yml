@@ -1,32 +1,36 @@
 version: 0.2
 
 env:
-  parameter-store:
+  variables:
     DOCKER_REGISTRY_USERNAME: /myapp/docker-credentials/username
     DOCKER_REGISTRY_PASSWORD: /myapp/docker-credentials/password
     DOCKER_REGISTRY_URL: /myapp/docker-registry/url
+    IMAGE_NAME: "eliyasankark/mypyapp"
+
 phases:
   install:
-    runtime-versions:
-      python: 3.7
-    
+    commands:
+      - echo "Skipping Docker installation since it's already installed..."
+
   pre_build:
     commands:
-      #- echo Logging in to Amazon ECR...
-      #- $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION)
-        pip install -r AWS/requirements.txt
+      - echo "Checking environment variables..."
+      - echo "DOCKER_REGISTRY_URL is ${DOCKER_REGISTRY_URL}"
+      - echo "DOCKER_REGISTRY_USERNAME is ${DOCKER_REGISTRY_USERNAME}"
+      - echo "DOCKER_REGISTRY_PASSWORD is set"
+
   build:
     commands:
-      - cd /AWS
-      - echo "Building Docker image"
+      - echo "Building Docker image..."
       - echo "$DOCKER_REGISTRY_PASSWORD" | docker login -u "$DOCKER_REGISTRY_USERNAME" --password-stdin "$DOCKER_REGISTRY_URL"
-      - docker build -t "$DOCKER_REGISTRY_URL/$DOCKER_REGISTRY_USERNAME/pyaws-app:latest".
-      - docker push <> "docker.io/$DOCKER_REGISTRY_USERNAME/pyaws-app:latest".
+      - docker build -t "$DOCKER_REGISTRY_URL/$DOCKER_REGISTRY_USERNAME/pyaws-app:latest" .
+      - docker push "docker.io/eliyasankark/pyaws-app:latest"
 post_build:
   commands:
    # - echo Pushing the Docker image to Docker Hub...
    # - docker tag my-image:latest my-dockerhub-username/my-repo:latest
    # - docker push my-dockerhub-username/my-repo:latest
+
 
 
 
